@@ -3,6 +3,7 @@
  * as captured or imported — and, including edits, Highest Resolution or Most Compatible. Each
  * row downloads at once; Escape or × closes.
  */
+import { t } from "../../lib/i18n";
 import { useActiveRef } from "../../lib/screen";
 import { useEffect, useRef } from "react";
 import { useModalFocus } from "../../lib/focus";
@@ -33,18 +34,18 @@ export function DownloadOptions({ photos, onPick, onClose }: { photos: Photo[]; 
         <strong>{title}</strong>
         <small>{words}</small>
       </span>
-      <button className="icon-button px-dl-go" aria-label={`Download ${title}`} title="Download" onClick={() => onPick(want)}>
+      <button className="icon-button px-dl-go" aria-label={`Download ${title}`} title={t("ui.download")} onClick={() => onPick(want)}>
         <Download size={16} strokeWidth={2} aria-hidden="true" />
       </button>
     </div>
   );
   return (
     <div className="modal-veil" role="presentation" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
-      <div ref={sheetRef} className="modal-sheet px-sheet" role="dialog" aria-modal="true" aria-label="Download Options">
-        <button className="icon-button small round sheet-close" aria-label="Close" onClick={onClose}>
+      <div ref={sheetRef} className="modal-sheet px-sheet" role="dialog" aria-modal="true" aria-label={t("ui.downloadOptions")}>
+        <button className="icon-button small round sheet-close" aria-label={t("ui.close")} onClick={onClose}>
           <X size={16} strokeWidth={2.2} aria-hidden="true" />
         </button>
-        <h2>Download Options</h2>
+        <h2>{t("photos.downloadOptions")}</h2>
         <div className="px-dl-pics" aria-hidden="true">
           {photos.slice(0, 3).map((p) => (
             <img key={p.id} src={pictureSrc(p.id, "thumb")} alt="" />
@@ -52,9 +53,9 @@ export function DownloadOptions({ photos, onPick, onClose }: { photos: Photo[]; 
         </div>
         <p className="px-dl-count">{n === 1 ? "1 Item" : `${n} Items`}</p>
         {row("originals", "Unmodified Originals", "Originals as captured or imported")}
-        <p className="px-dl-head">Including Edits</p>
-        {row("highestQuality", "Highest Resolution", "Typically includes HEIC or H.265 files")}
-        {row("mostCompatible", "Most Compatible", "JPEG or MP4/H.264 when possible")}
+        <p className="px-dl-head">{t("ui.includingEdits")}</p>
+        {row("highestQuality", t("photos.highestQuality"), t("photos.highestQualityHint"))}
+        {row("mostCompatible", t("photos.mostCompatible"), t("photos.mostCompatibleHint"))}
       </div>
     </div>
   );

@@ -16,6 +16,7 @@
  *
  * A picture that cannot be had is passed over, never shown as a black frame.
  */
+import { t } from "../../lib/i18n";
 import { useActiveRef } from "../../lib/screen";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ChevronLeft, ChevronRight, Pause, Play, X } from "lucide-react";
@@ -213,7 +214,7 @@ export function Slideshow({
           if (!back || !top) return;
           stopFilm(back);
           back.img.src = url;
-          back.img.alt = p.filename ?? "Photo";
+          back.img.alt = p.filename ?? t("photos.photo");
           // Decoded on the element that will show it, so its first painted frame is whole.
           await back.img.decode().catch(() => undefined);
           if (mine !== asked.current) return;
@@ -361,29 +362,29 @@ export function Slideshow({
     <div ref={mount(k)} className="px-slide" style={{ opacity: 0 }} aria-hidden={k !== front.current || undefined}>
       <img alt="" decoding="sync" draggable={false} />
       <div className="px-slide-film" hidden>
-        <video playsInline preload="auto" aria-label="Video" />
+        <video playsInline preload="auto" aria-label={t("photos.videoAria")} />
       </div>
     </div>
   );
 
   return (
-    <div className={`px-show${awake ? " is-awake" : ""}`} role="dialog" aria-label="Slideshow" aria-busy={!ready} onMouseMove={wake} onClick={wake}>
+    <div className={`px-show${awake ? " is-awake" : ""}`} role="dialog" aria-label={t("ui.slideshow")} aria-busy={!ready} onMouseMove={wake} onClick={wake}>
       {slide("a")}
       {slide("b")}
-      <div className="px-show-bar toolbar-group" role="toolbar" aria-label="Slideshow controls">
-        <button className="tool px-cap" aria-label="Previous" onClick={() => void go(-1)}>
+      <div className="px-show-bar toolbar-group" role="toolbar" aria-label={t("ui.slideshowControls")}>
+        <button className="tool px-cap" aria-label={t("ui.previous")} onClick={() => void go(-1)}>
           <ChevronLeft size={18} />
         </button>
         <button className="tool px-cap" aria-label={playing ? "Pause" : "Play"} onClick={toggle}>
           {playing ? <Pause size={17} fill="currentColor" strokeWidth={0} /> : <Play size={17} fill="currentColor" strokeWidth={0} />}
         </button>
-        <button className="tool px-cap" aria-label="Next" onClick={() => void go(1)}>
+        <button className="tool px-cap" aria-label={t("ui.next")} onClick={() => void go(1)}>
           <ChevronRight size={18} />
         </button>
         <span className="px-show-count" aria-live="polite">
           {at + 1} of {ids.length}
         </span>
-        <button className="tool px-cap" aria-label="End Slideshow" title="End Slideshow (Esc)" onClick={onClose}>
+        <button className="tool px-cap" aria-label={t("ui.endSlideshow")} title={t("ui.endSlideshowEsc")} onClick={onClose}>
           <X size={17} />
         </button>
       </div>
