@@ -103,6 +103,11 @@
     <color type="primary" scheme_preference="dark">#0B2A4A</color>
   </branding>
   <releases>
+    <release version="0.1.25" date="2026-11-16">
+      <description>
+        <p>On Windows, the Drive folder in File Explorer comes back on by itself after a restart, and folders open instead of failing with "The cloud operation is invalid"; if the folder can't start, Settings says why. Photos sorted Oldest First opens at the newest photos. Every app now comes in Simplified Chinese and German, with dates in the chosen language, and Reminders lists show the icon chosen on the iPhone, emoji included. The Keyboard Shortcuts sheet is easier to read. On Linux, each app's icon shows in every launcher and dock. On Android, three home-screen widgets: Reminders, Quick Reminder and Agenda.</p>
+      </description>
+    </release>
     <release version="0.1.24" date="2026-11-14">
       <description>
         <p>Custom smart lists made in Reminders show their reminders again: a list of tags matching any of them showed empty, and Skykeep now reads every rule Reminders offers, from tags and lists to include or leave out to each Date and Time choice. Other programs can tick a reminder off, put it back or open it in Reminders from the command line. On Linux, docks show the main window with its icon when Skykeep is installed from the .deb or .rpm.</p>
