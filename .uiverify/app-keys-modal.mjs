@@ -23,12 +23,14 @@ await page.waitForTimeout(150);
 ok(await page.evaluate(() => Boolean(document.activeElement?.closest('[aria-modal="true"]'))), "Ctrl+K leaves the focus in the open sheet");
 await page.keyboard.press("Control+,");
 await page.waitForTimeout(200);
-ok((await page.locator(".settings-title").count()) === 0 || !(await page.locator(".settings-title").isVisible()), "Ctrl+, does not change the screen under it");
+// Settings is a window of its own (apps.rs): the stub records settings_open in __windows.
+const settingsAsked = () => page.evaluate(() => (window.__windows ?? []).filter((w) => w.cmd === "settings_open").length);
+ok((await settingsAsked()) === 0, "Ctrl+, does not open Settings while the sheet is up");
 await page.keyboard.press("Escape");
 await page.waitForTimeout(150);
 await page.keyboard.press("Control+,");
-await page.locator(".settings-title").waitFor({ timeout: 2000 }).catch(() => {});
-ok(await page.locator(".settings-title").isVisible(), "with the sheet put away, Ctrl+, opens Settings");
+await page.waitForTimeout(200);
+ok((await settingsAsked()) === 1, "with the sheet put away, Ctrl+, opens Settings");
 await b.close();
 console.log(failures ? `\n${failures} FAILED` : "\nall passed");
 process.exit(failures ? 1 : 0);

@@ -45,9 +45,9 @@ const LicencesSheet = lazy(() => import("../components/LicencesSheet").then((m) 
 function folderState(f: DriveFolder, t: Translate): string {
   const w = f.waiting;
   if (!w || w.files === 0) return t("settings.driveUpToDate", { path: f.path });
-  if (w.failure) return t("settings.driveFilesWaiting", { count: w.files, failure: w.failure });
-  if (w.sending > 0) return t("settings.driveFilesUploading", { count: w.files });
-  return t("settings.driveFilesWaitingToUpload", { count: w.files });
+  if (w.failure) return t(w.files === 1 ? "settings.driveFilesWaitingOne" : "settings.driveFilesWaitingMany", { count: w.files, failure: w.failure });
+  if (w.sending > 0) return t(w.files === 1 ? "settings.driveFilesUploadingOne" : "settings.driveFilesUploadingMany", { count: w.files });
+  return t(w.files === 1 ? "settings.driveFilesWaitingToUploadOne" : "settings.driveFilesWaitingToUploadMany", { count: w.files });
 }
 
 /** A size on this computer, with the system's decimal mark: "6.8 GB", "6,8 GB". */
@@ -303,7 +303,7 @@ function BackupRow({ onError }: { onError: (m: string) => void }) {
             })
           : t("settings.readingDrive")
         : state.driveFiles > 0
-          ? t("settings.driveFilesCountAndSize", {
+          ? t(state.driveFiles === 1 ? "settings.driveFilesCountAndSizeOne" : "settings.driveFilesCountAndSizeMany", {
               count: state.driveFiles.toLocaleString(),
               size: size(state.driveBytes),
             })
