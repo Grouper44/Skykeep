@@ -122,7 +122,7 @@
     "keepPhotosUpTo": "照片缓存上限",
     "photosOfflineHint": "最近浏览的 {size} 照片，可供离线查看",
     "diskRoomHint": "当前最多使用 {size}，以为磁盘预留空间。",
-    "zeroKB": "零 KB",
+    "zeroKB": "0 KB",
     "general": "通用",
     "appearance": "外观",
     "auto": "自动",
@@ -1308,8 +1308,8 @@
     "nowChanged": "更改了 {items}",
     "nowRemoved": "移除了 {items}",
     "nowHolds": "此文件夹现在包含 {items}",
-    "nowChangedSince": "{holds}，自在此显示以来已在另一台设备上{said}。它将连同其中的所有内容一起移到“最近删除”。",
-    "nowChangedPlain": "{holds}。自在此显示以来，它已在另一台设备上被更改。它将连同其中的所有内容一起移到“最近删除”。"
+    "nowChangedSince": "{holds}，自此处显示后已在另一台设备上{said}。它将连同其中的所有内容一起移到“最近删除”。",
+    "nowChangedPlain": "{holds}。自此处显示后，它已在另一台设备上被更改。它将连同其中的所有内容一起移到“最近删除”。"
   },
   "shortcuts": {
     "title": "键盘快捷键",
