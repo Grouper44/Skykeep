@@ -1463,6 +1463,12 @@ export async function openScreen(page, name) {
 }
 
 /* Settings: Skykeep's own window, the address with no app (docs/apps-as-windows.md). */
+/* One of Settings' sections, from its sidebar ("This Computer", "Backup", …; Home is the account). */
+export async function openPane(page, name) {
+  await page.getByRole("tab", { name, exact: true }).click();
+  await page.locator(".prefs-pane:not([hidden])").first().waitFor();
+}
+
 export async function openSettings(page) {
   const url = new URL(page.url());
   if (url.searchParams.get("app")) {
