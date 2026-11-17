@@ -127,9 +127,15 @@ export function Periods({
   const rows = Math.ceil(tiles.length / across);
   /** Where the row of tile `i` lies in the scroller: at its top, under the bar. */
   const rowTop = (i: number) => Math.floor(i / across) * rowH;
-  // The rows on screen and a screen either side.
-  const first = rowH > 0 ? Math.max(0, Math.floor(top / rowH) - Math.ceil(height / rowH)) : 0;
-  const last = rowH > 0 ? Math.min(rows, Math.ceil((top + height) / rowH) + Math.ceil(height / rowH)) : 0;
+  // The rows on screen and a screen either side — none before the width is known (unmeasured, a
+  // tile was 0 wide and a row only the gap high: hundreds made at once).
+  // Nor before the level has landed: the scroll kept from the level before (Years' place, read
+  // as Months') made a screen of the wrong months first, their pictures asked for and thrown
+  // away when it landed a moment later (each switch to Months asked for 291 pictures to show 37).
+  const [landed, setLanded] = useState<{ level: string; land: Place | null | undefined } | null>(null);
+  const ready = width > 0 && rowH > shape.gap && landed?.level === level && landed.land === land;
+  const first = ready ? Math.max(0, Math.floor(top / rowH) - Math.ceil(height / rowH)) : 0;
+  const last = ready ? Math.min(rows, Math.ceil((top + height) / rowH) + Math.ceil(height / rowH)) : 0;
 
   // The tile that takes Tab: the one landed on, then the one the arrows or a click moved to.
   const [current, setCurrent] = useState(0);
@@ -157,8 +163,23 @@ export function Periods({
     at.current = where(i);
     scrollTo(target < 0 ? 0 : rowTop(i));
     if (target >= 0) focusing.current = i;
+    holdAt.current = target < 0 ? null : i;
+    setLanded({ level, land });
     // Only on arriving at a level (and once it has a width): a sync leaves it be.
   }, [level, land, width > 0]); // eslint-disable-line react-hooks/exhaustive-deps
+  /**
+   * The tile landed on, kept at the top until the person moves: the layout can still change
+   * under it — WebKit takes its scrollbar out of the width once the level is taller than the
+   * window, a row then holds fewer tiles, and the landed month was rows away from the top.
+   */
+  const holdAt = useRef<number | null>(null);
+  useLayoutEffect(() => {
+    const i = holdAt.current;
+    if (i !== null && rowH > shape.gap) scrollTo(rowTop(i));
+  }, [across, rowH]); // eslint-disable-line react-hooks/exhaustive-deps
+  const moved = () => {
+    holdAt.current = null;
+  };
   useLayoutEffect(() => {
     const i = focusing.current;
     if (i === null) return;
@@ -207,7 +228,7 @@ export function Periods({
   const dpr = window.devicePixelRatio || 1;
   const big = Math.min(level === "years" ? YEAR_PX : MONTH_PX, Math.round((level === "years" ? 560 : 320) * dpr));
   return (
-    <div ref={box} className="px-periods" data-level={level} onScroll={onScroll} onKeyDown={onKeyDown}>
+    <div ref={box} className="px-periods" data-level={level} onScroll={onScroll} onKeyDown={(e) => { moved(); onKeyDown(e); }} onWheel={moved} onPointerDown={moved} onTouchStart={moved}>
       <div
         className="px-periods-grid"
         role="group"
