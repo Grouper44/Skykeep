@@ -237,6 +237,8 @@ pooled "webkit: glass rules" env ENGINE=webkit node .uiverify/glass-motion.mjs
 pooled "glass frames"      node .uiverify/glass-frames.mjs
 pooled "webkit: glass frames" env ENGINE=webkit node .uiverify/glass-frames.mjs
 pooled "open at login"     node .uiverify/login-item.mjs
+pooled "update this app"   node .uiverify/footer-refresh.mjs
+pooled "webkit: update this app" env ENGINE=webkit node .uiverify/footer-refresh.mjs
 pooled "notes tables"      node .uiverify/notes-table.mjs
 pooled "reminder menu"     node .uiverify/reminders-context.mjs
 pooled "notes media"       node .uiverify/notes-media.mjs
