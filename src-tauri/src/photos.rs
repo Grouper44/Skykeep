@@ -3101,11 +3101,12 @@ async fn one(app: &AppHandle, u: quince_core::photos::Upload) -> bool {
         return false;
     }
     let auth = app.state::<Auth>();
-    let (http, ck, params, upload_root) = {
+    let (http, uploads, ck, params, upload_root) = {
         let client = auth.client.lock().await;
         let s = client.session();
         (
             client.http().clone(),
+            client.uploads().clone(),
             s.service_url("ckdatabasews"),
             client.service_params(),
             s.service_url("photosupload"),
@@ -3224,6 +3225,7 @@ async fn one(app: &AppHandle, u: quince_core::photos::Upload) -> bool {
         let result = futures_util::future::Abortable::new(
             quince_icloud::photos_upload::send(
                 &http,
+                &uploads,
                 &upload_root,
                 &dsid,
                 &library,
