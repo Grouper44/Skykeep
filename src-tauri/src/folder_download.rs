@@ -1100,8 +1100,12 @@ fn whole_here(path: &Path, item: &DriveItem) -> bool {
     let Ok(meta) = std::fs::symlink_metadata(path) else {
         return false;
     };
-    let same_size = size_of(item).is_some_and(|size| meta.is_file() && meta.len() == size);
-    let same_version = match (quince_icloud::drive::changed_at(item), meta.modified()) {
+    let changed_at = quince_icloud::drive::changed_at(item);
+    // A package's zip goes by its date alone, so only when Apple gave one: without it nothing
+    // would ever tell a changed package, and it is fetched again (the copy here kept earlier).
+    let same_size = size_of(item).is_some_and(|size| meta.is_file() && meta.len() == size)
+        || (meta.is_file() && changed_at.is_some() && package_zip(path, item));
+    let same_version = match (changed_at, meta.modified()) {
         (Some(changed), Ok(on_disk)) => {
             let apart = changed
                 .duration_since(on_disk)
@@ -1113,6 +1117,26 @@ fn whole_here(path: &Path, item: &DriveItem) -> bool {
         (Some(_), Err(_)) => false,
     };
     same_size && same_version
+}
+
+/// The file at `path` is a package as iCloud hands one down: a zip (it starts `PK\x03\x04`)
+/// under a name that isn't one (an `.app`, a `.playgroundbook`, a folder-kept `.epub`). Its
+/// size is the zip's and never the package's own that the listing gives, so the size can't tell
+/// it whole; the date (checked beside this) still tells a package changed since.
+fn package_zip(path: &Path, item: &DriveItem) -> bool {
+    use std::io::Read;
+    let named_zip = item
+        .extension
+        .as_deref()
+        .is_some_and(|e| e.eq_ignore_ascii_case("zip"))
+        || item.name.to_ascii_lowercase().ends_with(".zip");
+    if named_zip {
+        return false;
+    }
+    let mut head = [0u8; 4];
+    std::fs::File::open(path)
+        .and_then(|mut f| f.read_exact(&mut head))
+        .is_ok_and(|()| head == *b"PK\x03\x04")
 }
 
 /// A backup's copy of a file, about to be replaced by a newer version, moved to the same place
