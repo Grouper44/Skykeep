@@ -452,6 +452,7 @@ async fn ours(remote: &dyn Remote) -> Result<DriveItem, String> {
         created_at: None,
         modified_at: None,
         etag: None,
+        share: None,
     };
     remote.mkdir(&parent, &name).await
 }
